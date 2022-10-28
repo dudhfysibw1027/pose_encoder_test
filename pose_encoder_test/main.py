@@ -1,5 +1,5 @@
 import os
-
+import sys
 import torch
 import torch.utils.data as data
 from parsing_generation_segm_attr_dataset import ParsingGenerationDeepFashionAttrSegmDataset
@@ -9,9 +9,9 @@ from pose_encoder import ShapeAttrEmbedding, PoseEncoder
 
 def main():
     train_dataset = ParsingGenerationDeepFashionAttrSegmDataset(
-        segm_dir = "./processed_dataset/segm",
-        pose_dir = "./processed_dataset/densepose",
-        ann_file = "./processed_dataset/shape_ann")
+        segm_dir = sys.argv[0],
+        pose_dir = sys.argv[1],
+        ann_file = sys.argv[2])
 
     train_loader = data. DataLoader(
         dataset=train_dataset,
