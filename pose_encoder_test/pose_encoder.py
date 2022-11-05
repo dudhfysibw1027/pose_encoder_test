@@ -201,7 +201,7 @@ class PoseEncoder(nn.Module):
     def __init__(self, ngf=64, blur_kernel=[1, 3, 3, 1], size=256, attr_dim=128):
         super().__init__()
         self.size = size
-        convs = [ConvLayer(3, ngf, 1)]                      # in 3 out 64
+        convs = [ConvLayer(1, ngf, 1)]                      # in 3 out 64
         convs.append(ResBlock(ngf, ngf*2, attr_dim, blur_kernel))     # in 64 out 128
         convs.append(ResBlock(ngf*2, ngf*4, attr_dim, blur_kernel))
         convs.append(ResBlock(ngf*4, ngf*8, attr_dim, blur_kernel))
@@ -220,10 +220,13 @@ class PoseEncoder(nn.Module):
         for idx, conv in enumerate(self.convs):
             if idx != 0:
                 _, _, h, w = x.size()
+                print(type(x))
+                print(type(attr_embedding.view(b, c, 1, 1).expand(b, c, h, w)))
                 x = conv(
                     torch.cat(
-                        x,
-                        attr_embedding.view(b, c, 1, 1).expand(b, c, h, w), dim=1
+                        (x,
+                        attr_embedding.view(b, c, 1, 1).expand(b, c, h, w)), 
+                        dim=1
                     )
                 )
             else:
